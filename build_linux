@@ -1,0 +1,8 @@
+#!/bin/bash
+
+clear
+cd build
+rm -f *.o *.so
+g++ -D SAMPVECTORS -m32 -fPIC -c -O3 -w -D LINUX -D PROJECT_NAME=\"samp-vectors\" -I ./amx/ ./amx/*.c
+g++ -D SAMPVECTORS -m32 -fPIC -c -O3 -w -D LINUX -D PROJECT_NAME=\"samp-vectors\" -I ./amx/ *.cpp
+g++ -m32 -O2 -fshort-wchar -shared -o samp-vectors.so *.o
