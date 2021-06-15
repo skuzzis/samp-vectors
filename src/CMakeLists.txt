@@ -8,6 +8,7 @@ include_directories(
 	${SAMPSDK_INCLUDE_DIR}
 )
 
+
 add_samp_plugin(sampvectors
 	${SAMPSDK_DIR}/amxplugin.cpp
 	${SAMPSDK_DIR}/amxplugin2.cpp
