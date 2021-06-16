@@ -66,6 +66,14 @@ extern "C" const AMX_NATIVE_INFO native_list[] = {
     { "Vector_ReplaceIndex", Natives::Vector_ReplaceIndex },
     { "Vector_Replace", Natives::Vector_Replace },
     { "Vector_Insert", Natives::Vector_Insert },
+    { "Vector_Random", Natives::Vector_Random },
+
+    { "Vector_Begin", Natives::Vector_Begin },
+    { "Vector_End", Natives::Vector_End },
+    { "Vector_First", Natives::Vector_First },
+    { "Vector_Last", Natives::Vector_Last },
+    { "Vector_Next", Natives::Vector_Next },
+    { "Vector_Prev", Natives::Vector_Prev },
     { NULL, NULL }
 };
 
