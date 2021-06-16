@@ -31,7 +31,14 @@ native Vector_Size(Vector:vector_name);
 native Vector_Even(Vector:vector_name);
 native Vector_Odd(Vector:vector_name);
 native Vector_Empty(Vector:vector_name);
+native Vector_Random(Vector:vector_name);
 
+native Vector_Begin(Vector:vector_name);
+native Vector_End(Vector:vector_name);
+native Vector_First(Vector:vector_name);
+native Vector_Last(Vector:vector_name);
+native Vector_Next(Vector:vector_name, value);
+native Vector_Prev(Vector:vector_name, value);
 native Vector_PopBack(Vector:vector_name);
 native Vector_PopFront(Vector:vector_name);
 native Vector_FindIndex(Vector:vector_name, value);
