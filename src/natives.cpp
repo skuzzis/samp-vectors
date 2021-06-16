@@ -104,7 +104,7 @@ cell Natives::Vector_FindIndex(AMX* amx, cell* params) {
     auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
     if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i))
         return std::distance(vects[static_cast<int>(params[1])].begin(), i);
-    else return 0;
+    else return -1;
 }
 
 cell Natives::Vector_Add(AMX* amx, cell* params) {
@@ -125,6 +125,15 @@ cell Natives::Vector_FindValue(AMX* amx, cell* params) {
         return -1;
 
     return vects[static_cast<int>(params[1])].at(static_cast<int>(params[2]));
+}
+
+cell Natives::Vector_Random(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+
+    srand(static_cast<unsigned int>(time(0)));
+
+    return vects[static_cast<int>(params[1])].at(rand() % vects_size[static_cast<int>(params[1])]);
 }
 
 cell Natives::Vector_ReplaceIndex(AMX* amx, cell* params) {
@@ -167,6 +176,68 @@ cell Natives::Vector_Insert(AMX* amx, cell* params) {
         return -1;
 
     return vects[static_cast<int>(params[1])].insert(vects[static_cast<int>(params[1])].begin() + static_cast<int>(params[2]), static_cast<int>(params[3])), vects_size[static_cast<int>(params[1])] ++, 1;
+}
+
+cell Natives::Vector_Begin(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+    if (vects_size[static_cast<int>(params[1])] < 1)
+        return -1;
+    
+    return vects[static_cast<int>(params[1])].at(0) - 1;
+}
+
+cell Natives::Vector_End(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+    if (vects_size[static_cast<int>(params[1])] < 1)
+        return -1;
+
+    return vects[static_cast<int>(params[1])].at(vects_size[static_cast<int>(params[1])] - 1) + 1;
+}
+
+cell Natives::Vector_First(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+    if (vects_size[static_cast<int>(params[1])] < 1)
+        return -1;
+
+    return vects[static_cast<int>(params[1])].at(0);
+}
+
+cell Natives::Vector_Last(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+    if (vects_size[static_cast<int>(params[1])] < 1)
+        return -1;
+
+    return vects[static_cast<int>(params[1])].at(vects_size[static_cast<int>(params[1])] - 1);
+}
+
+cell Natives::Vector_Next(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+
+    if (vects_size[static_cast<int>(params[1])] < 2)
+        return -1;
+
+    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i) && std::distance(vects[static_cast<int>(params[1])].begin(), i) + 1 < vects_size[static_cast<int>(params[1])])
+        return vects[static_cast<int>(params[1])].at(std::distance(vects[static_cast<int>(params[1])].begin(), i) + 1);
+    else return -1;
+}
+
+cell Natives::Vector_Prev(AMX* amx, cell* params) {
+    if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
+        return -1;
+
+    if (vects_size[static_cast<int>(params[1])] < 2)
+        return -1;
+
+    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i) && std::distance(vects[static_cast<int>(params[1])].begin(), i) - 1 >= 0)
+        return vects[static_cast<int>(params[1])].at(std::distance(vects[static_cast<int>(params[1])].begin(), i) - 1);
+    else return -1;
 }
 
 cell Natives::Vector_Create(AMX* amx, cell* params) {
