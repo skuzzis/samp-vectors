@@ -30,6 +30,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 #include <string>
 #include <vector>
+#include <time.h>
 #include "amx/amx2.h"
 
 #include "common.hpp"
@@ -52,6 +53,13 @@ cell Vector_Delete(AMX* amx, cell* params);
 cell Vector_ReplaceIndex(AMX* amx, cell* params);
 cell Vector_Replace(AMX* amx, cell* params);
 cell Vector_Insert(AMX* amx, cell* params);
+cell Vector_Random(AMX* amx, cell* params);
+cell Vector_Begin(AMX* amx, cell* params);
+cell Vector_End(AMX* amx, cell* params);
+cell Vector_First(AMX* amx, cell* params);
+cell Vector_Last(AMX* amx, cell* params);
+cell Vector_Next(AMX* amx, cell* params);
+cell Vector_Prev(AMX* amx, cell* params);
 
 }
 
