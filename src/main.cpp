@@ -74,6 +74,7 @@ extern "C" const AMX_NATIVE_INFO native_list[] = {
     { "Vector_Last", Natives::Vector_Last },
     { "Vector_Next", Natives::Vector_Next },
     { "Vector_Prev", Natives::Vector_Prev },
+    { "Vector_DebugMode", Natives::Vector_DebugMode },
     { NULL, NULL }
 };
 
