@@ -30,4 +30,5 @@ native Vector_Insert(Vector:vector_name, index, value);
 native Vector_Clear(Vector:vector_name);
 ```
 
-[Features](https://github.com/skuzzis/pawn-vectors)
+[Features](https://github.com/skuzzis/pawn-vectors/blob/master/pages/features.md) - A list of features for SA:MP Vectors.
+[Examples](https://github.com/skuzzis/pawn-vectors/blob/master/pages/examples.md) - A list of examples for SA:MP Vectors.
