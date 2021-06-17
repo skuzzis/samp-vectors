@@ -9,6 +9,7 @@ native Vector_Even(Vector:vector_name);
 native Vector_Odd(Vector:vector_name);
 native Vector_Empty(Vector:vector_name);
 native Vector_Random(Vector:vector_name);
+native Vector_DebugMode(bool:value);
 
 native Vector_Begin(Vector:vector_name);
 native Vector_End(Vector:vector_name);
