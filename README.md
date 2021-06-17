@@ -18,7 +18,7 @@ SA:MP Vectors are vectors from C++ adapted to PAWN. It's more like YSI Iterators
 
 ## When was made SA:MP Vectors and what was the reason of developing it?
 
-SA:MP Vectors were started on 10th June 2021 and the first release was made on 14th June 2021. It has been developed in 2 full days and then only bug fixes. The reason of developing it was to improve the efficiency of YSI's Iterators, to make them faster and efficient.
+SA:MP Vectors were started on 10th June 2021 and the first release was made on 14th June 2021. It has been developed in 2 full days and then only bug fixes. The reason of developing it was to improve the efficiency of YSI's Iterators, to make them faster and efficient in my opinion.
 
 ## By who was made this project?
 
