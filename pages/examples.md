@@ -12,6 +12,16 @@ new Vector:vector1;
 public OnGameModeInit()
 {
     vector1 = Vector_Create();
-    return 0;
+    return 1;
+}
+```
+
+## foreachVector
+
+It's like `foreach` but for vectors.
+
+```pawn
+foreachVector(vector1, i) {
+    printf("%d", i);
 }
 ```
