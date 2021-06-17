@@ -60,6 +60,7 @@ cell Vector_First(AMX* amx, cell* params);
 cell Vector_Last(AMX* amx, cell* params);
 cell Vector_Next(AMX* amx, cell* params);
 cell Vector_Prev(AMX* amx, cell* params);
+cell Vector_DebugMode(AMX* amx, cell* params);
 
 }
 
