@@ -33,3 +33,9 @@ public OnGameModeInit() {
 You can use the vectors with the list of functions which are [here](https://github.com/skuzzis/pawn-vectors/blob/master/pages/natives_list.md).
 
 Also, you can get some examples from [here](https://github.com/skuzzis/pawn-vectors/blob/master/pages/examples.md).
+
+## External links
+
+[Functions List](https://github.com/skuzzis/pawn-vectors/blob/master/pages/natives_list.md) - A list of functions for SA:MP Vectors.
+
+[Examples](https://github.com/skuzzis/pawn-vectors/blob/master/pages/examples.md) - A list of examples for SA:MP Vectors.
