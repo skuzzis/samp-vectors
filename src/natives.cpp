@@ -122,10 +122,14 @@ cell Natives::Vector_FindIndex(AMX* amx, cell* params) {
     if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
         return -1;
 
-    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
-    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i))
-        return std::distance(vects[static_cast<int>(params[1])].begin(), i);
-    else return -1;
+    if (std::is_sorted(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end())) {
+        auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        return i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i) ? std::distance(vects[static_cast<int>(params[1])].begin(), i) : -1;
+    }
+    else {
+        auto i = std::find(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        return (i != vects[static_cast<int>(params[1])].end()) ? i - vects[static_cast<int>(params[1])].begin() : -1;
+    }
 }
 
 cell Natives::Vector_Add(AMX* amx, cell* params) {
@@ -164,19 +168,35 @@ cell Natives::Vector_ReplaceIndex(AMX* amx, cell* params) {
         return -1;
 
     if (debugging) logprintf("[SA:MP Vectors Debug] vector replacing index %d with value %d, to %d", static_cast<int>(params[2]), vects[static_cast<int>(params[1])].at(static_cast<int>(params[2])), static_cast<int>(params[3]));
+        
+    vects[static_cast<int>(params[1])].erase(vects[static_cast<int>(params[1])].begin() + static_cast<int>(params[2]));
+    vects[static_cast<int>(params[1])].insert(vects[static_cast<int>(params[1])].begin() + static_cast<int>(params[2]), static_cast<int>(params[3]));
 
-    return vects[static_cast<int>(params[1])][static_cast<int>(params[2])] = static_cast<int>(params[3]);
+    return 1;
 }
 
 cell Natives::Vector_Remove(AMX* amx, cell* params) {
     if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
         return -1;
 
-    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
-    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i)) {
-        if (debugging) logprintf("[SA:MP Vectors Debug] removed element %d which had index %d.", static_cast<int>(params[2]), std::distance(vects[static_cast<int>(params[1])].begin(), i));
-        return vects[static_cast<int>(params[1])].erase(vects[static_cast<int>(params[1])].begin() + std::distance(vects[static_cast<int>(params[1])].begin(), i)), vects_size[static_cast<int>(params[1])] --, 1;
-    } else return debugging ? logprintf("[SA:MP Vectors Debug] vector cannot remove element %d because it doesn't exists", static_cast<int>(params[2])), 0 : 0;
+    int index = -1;
+
+    if (std::is_sorted(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end())) {
+        auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if(!(i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i)))
+            return debugging ? logprintf("[SA:MP Vectors Debug] vector cannot remove element %d because it doesn't exists", static_cast<int>(params[2])), 0 : 0;
+
+        index = std::distance(vects[static_cast<int>(params[1])].begin(), i);
+    }
+    else {
+        auto i = std::find(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if(i == vects[static_cast<int>(params[1])].end())
+            return debugging ? logprintf("[SA:MP Vectors Debug] vector cannot remove element %d because it doesn't exists", static_cast<int>(params[2])), 0 : 0;
+        index = i - vects[static_cast<int>(params[1])].begin();
+    }
+
+    if (debugging) logprintf("[SA:MP Vectors Debug] removed element %d which had index %d.", static_cast<int>(params[2]), index);
+    return vects[static_cast<int>(params[1])].erase(vects[static_cast<int>(params[1])].begin() + index), vects_size[static_cast<int>(params[1])] --, 1;
 }
 
 cell Natives::Vector_Delete(AMX* amx, cell* params) {
@@ -190,12 +210,25 @@ cell Natives::Vector_Replace(AMX* amx, cell* params)
 {
     if (static_cast<int>(params[1]) < 0 || static_cast<int>(params[1]) > vectorID)
         return -1;
-    
-    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
-    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i)) {
-        if (debugging) logprintf("[SA:MP Vectors Debug] replaced element %d which had index %d to %d.", static_cast<int>(params[2]), std::distance(vects[static_cast<int>(params[1])].begin(), i), static_cast<int>(params[3]));
-        return vects[static_cast<int>(params[1])][std::distance(vects[static_cast<int>(params[1])].begin(), i)] = static_cast<int>(params[3]), 1;
-    } else return debugging ? logprintf("[SA:MP Vectors Debug] vector cannot replaece element %d because it doesn't exists", static_cast<int>(params[2])), 0 : 0;
+
+    int index = -1;
+
+    if (std::is_sorted(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end())) {
+        auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if (!(i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i)))
+            return debugging ? logprintf("[SA:MP Vectors Debug] vector cannot replace element %d because it doesn't exists", static_cast<int>(params[2])), 0 : 0;
+
+        index = std::distance(vects[static_cast<int>(params[1])].begin(), i);
+    }
+    else {
+        auto i = std::find(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if (i == vects[static_cast<int>(params[1])].end())
+            return debugging ? logprintf("[SA:MP Vectors Debug] vector cannot replace element %d because it doesn't exists", static_cast<int>(params[2])), 0 : 0;
+        index = i - vects[static_cast<int>(params[1])].begin();
+    }
+
+    if (debugging) logprintf("[SA:MP Vectors Debug] replaced element %d which had index %d to %d.", static_cast<int>(params[2]), index, static_cast<int>(params[3]));
+    return vects[static_cast<int>(params[1])][index] = static_cast<int>(params[3]), 1;
 }
 
 cell Natives::Vector_Insert(AMX* amx, cell* params) {
@@ -246,11 +279,23 @@ cell Natives::Vector_Next(AMX* amx, cell* params) {
     if (vects_size[static_cast<int>(params[1])] < 2)
         return -1;
 
-    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
-    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i) && std::distance(vects[static_cast<int>(params[1])].begin(), i) + 1 < vects_size[static_cast<int>(params[1])]) {
-        if (debugging) logprintf("[SA:MP Vectors Debug] Showing up the element %d.", vects[static_cast<int>(params[1])].at(std::distance(vects[static_cast<int>(params[1])].begin(), i) + 1));
-        return vects[static_cast<int>(params[1])].at(std::distance(vects[static_cast<int>(params[1])].begin(), i) + 1);
-    } else return debugging ? logprintf("[SA:MP Vectors Debug] A next value cannot be shown because is the last element from the vector."), -1 : -1;
+    int index = -1;
+
+    if (std::is_sorted(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end())) {
+        auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if (!(i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i)))
+            return debugging ? logprintf("[SA:MP Vectors Debug] A next value cannot be shown because is the last element from the vector."), -1 : -1;
+        index = std::distance(vects[static_cast<int>(params[1])].begin(), i);
+    }
+    else {
+        auto i = std::find(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if(i == vects[static_cast<int>(params[1])].end())
+            return debugging ? logprintf("[SA:MP Vectors Debug] A next value cannot be shown because is the last element from the vector."), -1 : -1;
+
+        index = i - vects[static_cast<int>(params[1])].begin();
+    }
+
+    return debugging ? logprintf("[SA:MP Vectors Debug] Showing up the element %d.", vects[static_cast<int>(params[1])].at(index + 1)), vects[static_cast<int>(params[1])].at(index + 1) : vects[static_cast<int>(params[1])].at(index + 1);
 }
 
 cell Natives::Vector_Prev(AMX* amx, cell* params) {
@@ -260,11 +305,23 @@ cell Natives::Vector_Prev(AMX* amx, cell* params) {
     if (vects_size[static_cast<int>(params[1])] < 2)
         return -1;
 
-    auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
-    if (i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i) && std::distance(vects[static_cast<int>(params[1])].begin(), i) - 1 >= 0) {
-        if (debugging) logprintf("[SA:MP Vectors Debug] Showing up the element %d.", vects[static_cast<int>(params[1])].at(std::distance(vects[static_cast<int>(params[1])].begin(), i) - 1));
-        return vects[static_cast<int>(params[1])].at(std::distance(vects[static_cast<int>(params[1])].begin(), i) - 1);
-    } else return debugging ? logprintf("[SA:MP Vectors Debug] A previous value cannot be shown because is the first element from the vector."), -1 : -1;
+    int index = -1;
+
+    if (std::is_sorted(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end())) {
+        auto i = std::lower_bound(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if (!(i != vects[static_cast<int>(params[1])].end() && !(static_cast<int>(params[2]) < *i)))
+            return debugging ? logprintf("[SA:MP Vectors Debug] A previvous value cannot be shown because is the first element from the vector."), -1 : -1;
+        index = std::distance(vects[static_cast<int>(params[1])].begin(), i);
+    }
+    else {
+        auto i = std::find(vects[static_cast<int>(params[1])].begin(), vects[static_cast<int>(params[1])].end(), static_cast<int>(params[2]));
+        if (i == vects[static_cast<int>(params[1])].end())
+            return debugging ? logprintf("[SA:MP Vectors Debug] A previvous value cannot be shown because is the first element from the vector."), -1 : -1;
+
+        index = i - vects[static_cast<int>(params[1])].begin();
+    }
+
+    return debugging ? logprintf("[SA:MP Vectors Debug] Showing up the element %d.", vects[static_cast<int>(params[1])].at(index - 1)), vects[static_cast<int>(params[1])].at(index - 1) : vects[static_cast<int>(params[1])].at(index - 1);
 }
 
 cell Natives::Vector_Create(AMX* amx, cell* params) {
