@@ -31,6 +31,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include <string>
 #include <vector>
 #include <time.h>
+#include <algorithm>
 #include "amx/amx2.h"
 
 #include "common.hpp"
