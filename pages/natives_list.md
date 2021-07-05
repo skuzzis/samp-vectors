@@ -27,7 +27,6 @@ native Vector_Remove(Vector:vector_name, value);
 native Vector_Delete(Vector:vector_name, index);
 native Vector_Replace(Vector:vector_name, old_value, new_value);
 native Vector_ReplaceIndex(Vector:vector_name, index, new_value);
-native Vector_Insert(Vector:vector_name, index, value);
 native Vector_Clear(Vector:vector_name);
 ```
 
