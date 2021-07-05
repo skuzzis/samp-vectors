@@ -172,7 +172,7 @@ new success = Vector_Delete(vector1, 0);
 
 ## Vector_Replace
 
-It replaces the given value to the new value. (**WARNING** If the old value isn't valid, it returns 0)
+It replaces the given value to the new value. (**WARNING** If the old value isn't valid, it returns -1)
 
 ```pawn
 new success = Vector_Replace(vector1, 0, 125);
