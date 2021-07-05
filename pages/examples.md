@@ -186,14 +186,6 @@ It replaces the given value to the specific index. (**WARNING** If the index isn
 new success = Vector_ReplaceIndex(vector1, 0, 125);
 ```
 
-## Vector_Insert
-
-It inserts the specific value at the given index.
-
-```pawn
-new success = Vector_Insert(vector1, 0, 125);
-```
-
 ## Vector_Clear
 
 It clears the vector.
